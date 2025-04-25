@@ -9,13 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -106,25 +104,25 @@ public class RenewalService {
                             boolean alreadyRenewed = secrets.stream().anyMatch(s -> s.has("endDateTime") && s.getString("endDateTime").equals(formattedDate));
                             if (!alreadyRenewed) {
                                 String secretText = renewClientSecret(token, existingSecretExpiry, app.getString("id"));
-                                if (!CollectionUtils.isEmpty(emailIds)) {
-                                    String displayName = app.getString("displayName");
-                                    String applicationEnvironment;
-                                    if (displayName.toLowerCase().contains("qa"))
-                                        applicationEnvironment = "QA";
-                                    else
-                                        applicationEnvironment = "PROD";
-
-                                    //Existing Secret Expiry
-                                    ZonedDateTime utcDateTime = ZonedDateTime.parse(existingSecretExpiry);
-                                    ZonedDateTime istDateTime = utcDateTime.withZoneSameInstant(ZoneId.systemDefault());
-                                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-                                    //New Secret Expiry
-                                    ZonedDateTime newIstDateTime = newDate.withZoneSameInstant(ZoneId.systemDefault());
-
-                                    emailService.sendEmail(emailIds, "Azure App Client Secret Renewal for " + displayName, applicationEnvironment, trouxId, istDateTime.format(formatter),
-                                            displayName, app.getString("appId"), secretText, newIstDateTime.format(formatter));
-                                }
+//                                if (!CollectionUtils.isEmpty(emailIds)) {
+//                                    String displayName = app.getString("displayName");
+//                                    String applicationEnvironment;
+//                                    if (displayName.toLowerCase().contains("qa"))
+//                                        applicationEnvironment = "QA";
+//                                    else
+//                                        applicationEnvironment = "PROD";
+//
+//                                    //Existing Secret Expiry
+//                                    ZonedDateTime utcDateTime = ZonedDateTime.parse(existingSecretExpiry);
+//                                    ZonedDateTime istDateTime = utcDateTime.withZoneSameInstant(ZoneId.systemDefault());
+//                                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//
+//                                    //New Secret Expiry
+//                                    ZonedDateTime newIstDateTime = newDate.withZoneSameInstant(ZoneId.systemDefault());
+//
+//                                    emailService.sendEmail(emailIds, "Azure App Client Secret Renewal for " + displayName, applicationEnvironment, trouxId, istDateTime.format(formatter),
+//                                            displayName, app.getString("appId"), secretText, newIstDateTime.format(formatter));
+//                                }
                             } else
                                 log.info("Secret with expiration {} is already renewed", existingSecretExpiry);
                         }
