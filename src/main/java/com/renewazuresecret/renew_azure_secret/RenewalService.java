@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -60,6 +61,10 @@ public class RenewalService {
 
     public void checkAndRenewSecret(OAuth2AuthorizedClient client) {
         String token = getAccessToken(client);
+        checkAndRenewSecret(token);
+    }
+
+    public void checkAndRenewSecret(String token) {
 
         String url = graphUrl + "/applications";
         long startTime = System.currentTimeMillis();
@@ -133,10 +138,13 @@ public class RenewalService {
                     log.info("{} is not accepting user logins", app.getString("appId"));
                 }
             }
+            catch (WebClientResponseException ex)
+            {
+                log.info("User does not own the application {} {}", appIdForException, ex.getMessage());
+            }
             catch (Exception ex)
             {
-                log.info("User does not own the application {}", appIdForException);
-                ex.printStackTrace();
+                log.info("Something went wrong {}", ex.getMessage());
             }
         }
     }

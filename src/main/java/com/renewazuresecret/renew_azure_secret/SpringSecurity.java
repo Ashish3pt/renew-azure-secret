@@ -20,7 +20,7 @@ public class SpringSecurity {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.apply(AadWebApplicationHttpSecurityConfigurer.aadWebApplication())
                 .and()
-                .authorizeHttpRequests()
+                .authorizeHttpRequests().requestMatchers("/renew_secret").permitAll()
                 .anyRequest().authenticated().and().oauth2Client();
         // Do some custom configuration.
         return http.build();

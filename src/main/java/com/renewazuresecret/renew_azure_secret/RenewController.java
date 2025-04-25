@@ -1,5 +1,6 @@
 package com.renewazuresecret.renew_azure_secret;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +14,18 @@ public class RenewController {
         this.renewalService = renewalService;
     }
 
-    @GetMapping("/")
-    public String login()
+    @GetMapping("/sign-in")
+    public String login(@RegisteredOAuth2AuthorizedClient("azure") OAuth2AuthorizedClient client)
     {
-        return "Login successful";
+        return client.getAccessToken().getTokenValue();
+    }
+
+    @GetMapping("/renew_secret")
+    public String renew(HttpServletRequest request)
+    {
+        String accessToken = request.getHeader("Authorization");
+        renewalService.checkAndRenewSecret(accessToken);
+        return "200 OK";
     }
 
     @GetMapping("/renew")
