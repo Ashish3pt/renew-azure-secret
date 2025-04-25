@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: renew-azure-secret
+  mail:
+    host: 0.0.0.0
+    port: 1025
+
+  cloud:
+    azure:
+      active-directory:
+        enabled: true
+        profile:
+          tenant-id: 2a589e73-e701-485a-8931-c12ac07b3996
+        credential:
+          client-id: 4d3d03ca-e102-4731-91a3-900b4b8d7ab4
+          client-secret: YNV8Q~ewEPSrXLoPtxDhwlQHNWcTw2CYarO6Maiw
+
+azure:
+  tenant-id: 2a589e73-e701-485a-8931-c12ac07b3996
+  client-id: 4d3d03ca-e102-4731-91a3-900b4b8d7ab4
+  client-secret: YNV8Q~ewEPSrXLoPtxDhwlQHNWcTw2CYarO6Maiw
+  graph-url: https://graph.microsoft.com/v1.0
